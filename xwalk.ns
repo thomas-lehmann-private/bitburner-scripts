@@ -1,3 +1,11 @@
+/**
+ * Walking (iterating) through all hosts.
+ *
+ * @param {NS} ns api instance of Bitburner
+ * @param {String} strHostName name of host
+ * @param {Array} registeredHosts list of already visited hosts
+ * @param {Function} callback function that can do anything with currently found host
+ */
 export async function xwalk(ns, strHostName, registeredHosts, callback) {
     registeredHosts.push(strHostName);
     // doing 'something' for the concrete host
