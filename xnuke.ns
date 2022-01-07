@@ -26,7 +26,8 @@ async function getTools(ns) {
 }
 
 /**
- * Nuke with opening of required ports (when possible)
+ * Run nuke with opening of required ports (when possible).
+ * It's not running when root access is already given.
  *
  * @param {NS} ns api instance of Bitburner
  * @param {String} strHostName name of host
@@ -44,6 +45,7 @@ export async function xnuke(ns, strHostName) {
                 await ns.nuke(strHostName);
                 hasRootAccess = true;
                 break;
+
             case 1:
                 if (tools.brutessh.given) {
                     await tools.brutessh.openPort(strHostName);
@@ -51,6 +53,7 @@ export async function xnuke(ns, strHostName) {
                     hasRootAccess = true;
                 }
                 break;
+
             case 2:
                 if (tools.brutessh.given && tools.ftpcrack.given) {
                     await ns.brutessh.openPort(strHostName);
@@ -59,6 +62,7 @@ export async function xnuke(ns, strHostName) {
                     hasRootAccess = true;
                 }
                 break;
+
             case 3:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given) {
                     await ns.brutessh.openPort(strHostName);
@@ -68,6 +72,7 @@ export async function xnuke(ns, strHostName) {
                     hasRootAccess = true;
                 }
                 break;
+
             case 4:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given && tools.httpworm.given) {
                     await ns.brutessh.openPort(strHostName);
