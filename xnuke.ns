@@ -1,0 +1,85 @@
+/**
+ * Get map with tools given state and the api call for it.
+ *
+ * @param {NS} ns api instance for Bitburner
+ * @returns {Object} map with tools
+ */
+async function getTools(ns) {
+    return {
+        brutessh: {
+            given: await ns.fileExists('BruteSSH.exe', 'home'),
+            openPort: ns.brutessh
+        },
+        ftpcrack: {
+            given: await ns.fileExists('FTPCrack.exe', 'home'),
+            openPort: ns.ftpcrack
+        },
+        relaysmtp: {
+            given: await ns.fileExists('relaySMTP.exe', 'home'),
+            openPort: ns.relaysmtp
+        },
+        httpworm: {
+            given: await ns.fileExists('HTTPWorm.exe', 'home'),
+            openPort: ns.httpworm
+        }
+    };
+}
+
+/**
+ * Nuke with opening of required ports (when possible)
+ *
+ * @param {NS} ns api instance of Bitburner
+ * @param {String} strHostName name of host
+ * @return {Boolean} true when root access has been established.
+ */
+export async function xnuke(ns, strHostName) {
+    var hasRootAccess = await ns.hasRootAccess(strHostName);
+
+    // Missing root access? Trying to get it ...
+    if (!hasRootAccess) {
+        var tools = await getTools(ns);
+        var iNumRequiredPort = ns.getServerNumPortsRequired(strHostName);
+        switch (iNumRequiredPort) {
+            case 0:
+                await ns.nuke(strHostName);
+                hasRootAccess = true;
+                break;
+            case 1:
+                if (tools.brutessh.given) {
+                    await tools.brutessh.openPort(strHostName);
+                    await ns.nuke(strHostName);
+                    hasRootAccess = true;
+                }
+                break;
+            case 2:
+                if (tools.brutessh.given && tools.ftpcrack.given) {
+                    await ns.brutessh.openPort(strHostName);
+                    await ns.ftpcrack.openPort(strHostName);
+                    await ns.nuke(strHostName);
+                    hasRootAccess = true;
+                }
+                break;
+            case 3:
+                if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given) {
+                    await ns.brutessh.openPort(strHostName);
+                    await ns.ftpcrack.openPort(strHostName);
+                    await ns.relaysmtp.openPort(strHostName);
+                    await ns.nuke(strHostName);
+                    hasRootAccess = true;
+                }
+                break;
+            case 4:
+                if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given && tools.httpworm.given) {
+                    await ns.brutessh.openPort(strHostName);
+                    await ns.ftpcrack.openPort(strHostName);
+                    await ns.relaysmtp.openPort(strHostName);
+                    await ns.httpworm.openPort(strHostName);
+                    await ns.nuke(strHostName);
+                    hasRootAccess = true;
+                }
+                break;
+        }
+    }
+
+    return hasRootAccess;
+}

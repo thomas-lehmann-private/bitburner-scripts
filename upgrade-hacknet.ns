@@ -1,0 +1,66 @@
+import { findIndexForMinimum } from "xhacknet.ns";
+
+/** @param {NS} ns **/
+export async function main(ns) {
+    var SLEEP_STEP = 1000; // 1 second
+    var SLEEP_NO_MONEY = 60 * 1000; // 1 minute
+    var SLEEP_NO_UPGRADE = 5 * 60 * 1000; // 5 minutes
+
+    var player = await ns.getPlayer();
+    ns.print("Player given money is " + player.money);
+    var playerMinimumMoney = parseInt(ns.args[0], 10);
+    ns.print("Player minimum money to keep is " + playerMinimumMoney);
+
+    // run forever (that's the plan) -> kill it, if required
+    while (true) {
+        player = await ns.getPlayer();
+        // search for node with lowest level
+        var iNode = await findIndexForMinimum(ns, async (iNode) => await ns.hacknet.getNodeStats(iNode).level);
+        var upgradeCosts = await ns.hacknet.getLevelUpgradeCost(iNode);
+        // can upgrade? (not possible when minimum is already maximum level)
+        if (upgradeCosts !== Infinity) {
+            if ((player.money - upgradeCosts) < playerMinimumMoney) {
+                ns.print("Not enough money (given: " + player.money + ", keep: " + playerMinimumMoney);
+                await ns.sleep(SLEEP_NO_MONEY);
+            } else {
+                await ns.hacknet.upgradeLevel(iNode);
+                await ns.sleep(SLEEP_STEP);
+            }
+            continue;
+        }
+
+        player = await ns.getPlayer();
+        // search for node with lowest ram
+        iNode = await findIndexForMinimum(ns, async (iNode) => await ns.hacknet.getNodeStats(iNode).ram);
+        upgradeCosts = await ns.hacknet.getRamUpgradeCost(iNode);
+        // can upgrade? (not possible when minimum is already maximum ram)
+        if (upgradeCosts !== Infinity) {
+            if ((player.money - upgradeCosts) < playerMinimumMoney) {
+                ns.print("Not enough money (given: " + player.money + ", keep: " + playerMinimumMoney);
+                await ns.sleep(SLEEP_NO_MONEY);
+            } else {
+                await ns.hacknet.upgradeRam(iNode);
+                await ns.sleep(SLEEP_STEP);
+            }
+            continue;
+        }
+
+        player = await ns.getPlayer();
+        // search for node with lowest cores
+        iNode = await findIndexForMinimum(ns, async (iNode) => await ns.hacknet.getNodeStats(iNode).cores);
+        upgradeCosts = await ns.hacknet.getCoreUpgradeCost(iNode);
+        // can upgrade? (not possible when minimum is already maximum cores)
+        if (upgradeCosts !== Infinity) {
+            if ((player.money - upgradeCosts) < playerMinimumMoney) {
+                ns.print("Not enough money (given: " + player.money + ", keep: " + playerMinimumMoney);
+                await ns.sleep(SLEEP_NO_MONEY);
+            } else {
+                await ns.hacknet.upgradeCore(iNode);
+                await ns.sleep(SLEEP_STEP);
+            }
+            continue;
+        }
+
+        await ns.sleep(SLEEP_NO_UPGRADE);
+    }
+}
