@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { findIndexForMinimum } from "xhacknet.ns";
+import { findIndexForMinimum } from "xhacknet.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {

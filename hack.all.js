@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { xwalk } from "xwalk.ns";
-import { xnuke } from "xnuke.ns";
+import { xwalk } from "xwalk.js";
+import { xnuke } from "xnuke.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {
