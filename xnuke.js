@@ -80,8 +80,8 @@ export async function xnuke(ns, strHostName) {
 
             case 2:
                 if (tools.brutessh.given && tools.ftpcrack.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }
@@ -89,9 +89,9 @@ export async function xnuke(ns, strHostName) {
 
             case 3:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
-                    await ns.relaysmtp.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
+                    await tools.relaysmtp.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }
@@ -99,10 +99,10 @@ export async function xnuke(ns, strHostName) {
 
             case 4:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given && tools.httpworm.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
-                    await ns.relaysmtp.openPort(strHostName);
-                    await ns.httpworm.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
+                    await tools.relaysmtp.openPort(strHostName);
+                    await tools.httpworm.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }
