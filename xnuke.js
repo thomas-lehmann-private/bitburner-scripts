@@ -1,3 +1,27 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2022 Thomas Lehmann.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 /**
  * Get map with tools given state and the api call for it.
  *
@@ -26,7 +50,8 @@ async function getTools(ns) {
 }
 
 /**
- * Nuke with opening of required ports (when possible)
+ * Run nuke with opening of required ports (when possible).
+ * It's not running when root access is already given.
  *
  * @param {NS} ns api instance of Bitburner
  * @param {String} strHostName name of host
@@ -44,6 +69,7 @@ export async function xnuke(ns, strHostName) {
                 await ns.nuke(strHostName);
                 hasRootAccess = true;
                 break;
+
             case 1:
                 if (tools.brutessh.given) {
                     await tools.brutessh.openPort(strHostName);
@@ -51,29 +77,32 @@ export async function xnuke(ns, strHostName) {
                     hasRootAccess = true;
                 }
                 break;
+
             case 2:
                 if (tools.brutessh.given && tools.ftpcrack.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }
                 break;
+
             case 3:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
-                    await ns.relaysmtp.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
+                    await tools.relaysmtp.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }
                 break;
+
             case 4:
                 if (tools.brutessh.given && tools.ftpcrack.given && tools.relaysmtp.given && tools.httpworm.given) {
-                    await ns.brutessh.openPort(strHostName);
-                    await ns.ftpcrack.openPort(strHostName);
-                    await ns.relaysmtp.openPort(strHostName);
-                    await ns.httpworm.openPort(strHostName);
+                    await tools.brutessh.openPort(strHostName);
+                    await tools.ftpcrack.openPort(strHostName);
+                    await tools.relaysmtp.openPort(strHostName);
+                    await tools.httpworm.openPort(strHostName);
                     await ns.nuke(strHostName);
                     hasRootAccess = true;
                 }

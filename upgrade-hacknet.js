@@ -1,4 +1,27 @@
-import { findIndexForMinimum } from "xhacknet.ns";
+/*
+ * The MIT License
+ *
+ * Copyright 2022 Thomas Lehmann.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+import { findIndexForMinimum } from "xhacknet.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -6,14 +29,11 @@ export async function main(ns) {
     var SLEEP_NO_MONEY = 60 * 1000; // 1 minute
     var SLEEP_NO_UPGRADE = 5 * 60 * 1000; // 5 minutes
 
-    var player = await ns.getPlayer();
-    ns.print("Player given money is " + player.money);
     var playerMinimumMoney = parseInt(ns.args[0], 10);
-    ns.print("Player minimum money to keep is " + playerMinimumMoney);
 
     // run forever (that's the plan) -> kill it, if required
     while (true) {
-        player = await ns.getPlayer();
+        var player = await ns.getPlayer();
         // search for node with lowest level
         var iNode = await findIndexForMinimum(ns, async (iNode) => await ns.hacknet.getNodeStats(iNode).level);
         var upgradeCosts = await ns.hacknet.getLevelUpgradeCost(iNode);
@@ -61,6 +81,8 @@ export async function main(ns) {
             continue;
         }
 
+        // sleeping longer because nothing to upgrade
+        // TODO: auto purchase nodes when there is sufficient money given
         await ns.sleep(SLEEP_NO_UPGRADE);
     }
 }
