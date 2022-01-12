@@ -1,6 +1,10 @@
 # bitburner-scripts
 My bitburner scripts
 
+## Browser
+
+Playing via Browser: https://danielyxie.github.io/bitburner/
+
 ## xwalk.js
 
 The module provides the **xwalk** function allowing to walk through
@@ -25,7 +29,6 @@ export async function main(ns) {
     }
 }
 ```
-
 ## xnuke.js
 
 Usage:
@@ -92,3 +95,18 @@ It is running in an endless loop (you have to kill the script when required).
 If root access is missing xnuke is called and when succeeded the hacking is following.
 As long the hacking level is sufficient and the server has enough money `ns.hack` is called.
 If there is not enough money `ns.grow` is called.
+
+## xthreads.js
+
+The script can be used with `run xthreads.js <host> <script>`.
+
+It's calculating the threads you can use to run the script on given server
+printing it to the terminal.
+
+## xscp.js
+
+The script can be used with `run xscp.js`.
+
+ - It does copy all .js files from 'home' to all purchased servers.
+ - It is assumed that you run the script on 'home'.
+ 
