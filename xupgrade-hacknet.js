@@ -81,8 +81,20 @@ export async function main(ns) {
             continue;
         }
 
+        player = await ns.getPlayer();
+        var nodeCosts = ns.hacknet.getPurchaseNodeCost();
+        // can purchase?
+        if (nodeCosts !== Infinity) {
+            if ((player.money - nodeCosts) < playerMinimumMoney) {
+                ns.print("Not enough money (given: " + player.money + ", keep: " + playerMinimumMoney);
+                await ns.sleep(SLEEP_NO_MONEY);
+            } else {
+                ns.hacknet.purchaseNode();
+                await ns.sleep(SLEEP_STEP);
+            }
+        }
+
         // sleeping longer because nothing to upgrade
-        // TODO: auto purchase nodes when there is sufficient money given
         await ns.sleep(SLEEP_NO_UPGRADE);
     }
 }
