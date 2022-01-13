@@ -5,6 +5,14 @@ My bitburner scripts
 
 Playing via Browser: https://danielyxie.github.io/bitburner/
 
+## Quickstart
+
+Of course you have to ensure that you server has enough RAM to run the scripts.
+
+ - copy content  of `xget-scripts.js` in new script with same name in Bitburner and run it.
+ - run `xscp.js` then (does make sense only when you have purchased servers)
+ - run `xupgrade-hacknet.js 1000000` or another value that allows to keep as much money you like
+
 ## xwalk.js
 
 The module provides the **xwalk** function allowing to walk through
@@ -110,3 +118,9 @@ The script can be used with `run xscp.js`.
  - It does copy all .js files from 'home' to all purchased servers.
  - It is assumed that you run the script on 'home'.
  
+ ## xget-scripts.js
+
+The script can be used with `run xget-script.js`.
+
+ - it does download all scripts to the home server
+ - details are printed to the terminal 

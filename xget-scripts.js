@@ -37,7 +37,7 @@ export async function main(ns) {
     ];
 
     for (var iScript=0; iScript < scripts.length; ++iScript) {
-        ns.tprint("wget of " + scripts[iScript].url);
+        ns.tprint("wget of " + scripts[iScript]);
         if (!await ns.wget(strBaseUrl + scripts[iScript], scripts[iScript], 'home')) {
             ns.tprint(" ... failed to get " + strBaseUrl + scripts[iScript]);
         }	
