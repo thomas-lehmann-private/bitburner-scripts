@@ -21,25 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import { xwalk } from "xwalk.js";
+import { xnuke } from "xnuke.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {
-    const strBaseUrl = 'https://raw.githubusercontent.com/thomas-lehmann-private/bitburner-scripts/main/'
-    const scripts = [
-        'xwalk.js',
-        'xnuke.js',
-        'xhacknet.js',
-        'xscp.js',
-        'xthreads.js',
-        'xhack.all.js',
-        'xgain-root-access.js',
-        'xupgrade-hacknet.js'
-    ];
-
-    for (var iScript=0; iScript < scripts.length; ++iScript) {
-        ns.tprint("wget of " + scripts[iScript]);
-        if (!await ns.wget(strBaseUrl + scripts[iScript], scripts[iScript], 'home')) {
-            ns.tprint(" ... failed to get " + strBaseUrl + scripts[iScript]);
-        }	
+    while (true) {
+        var registeredHosts = [];
+        await xwalk(ns, 'home', registeredHosts, async (strHostName) => {
+            if (strHostName !== 'home' && !strHostName.startsWith('slave')) {
+                ns.print("Processing host " + strHostName);
+                var hasRootAccess = await xnuke(ns, strHostName);
+                if (hasRootAccess) {
+                    if (await ns.getHackingLevel() > ns.getServerRequiredHackingLevel(strHostName)) {
+                        while (ns.getServerSecurityLevel(strHostName) >= 50) {
+                            await ns.weaken(strHostName);
+                        }
+                    }
+                }
+            }
+            // continue the walking
+            return true;
+        });
     }
 }

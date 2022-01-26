@@ -21,25 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 /** @param {NS} ns **/
 export async function main(ns) {
-    const strBaseUrl = 'https://raw.githubusercontent.com/thomas-lehmann-private/bitburner-scripts/main/'
-    const scripts = [
-        'xwalk.js',
-        'xnuke.js',
-        'xhacknet.js',
-        'xscp.js',
-        'xthreads.js',
-        'xhack.all.js',
-        'xgain-root-access.js',
-        'xupgrade-hacknet.js'
-    ];
+    const minimumRam = 1024
+    const playerMinimumMoney = parseInt(ns.args[0], 10)
 
-    for (var iScript=0; iScript < scripts.length; ++iScript) {
-        ns.tprint("wget of " + scripts[iScript]);
-        if (!await ns.wget(strBaseUrl + scripts[iScript], scripts[iScript], 'home')) {
-            ns.tprint(" ... failed to get " + strBaseUrl + scripts[iScript]);
-        }	
+    const allFiles = await ns.ls('home', '');
+    const sourceFiles = allFiles.filter(entry => entry.indexOf('.js') > 0);
+    ns.tprint('Given files: ' + sourceFiles);
+ 
+    let serverCosts = await ns.getPurchasedServerCost(minimumRam)
+    let player = await ns.getPlayer()
+    let count = 0
+ 
+    while ((player.money - serverCosts) > playerMinimumMoney) {
+       const strServerName = await ns.purchaseServer('slave', minimumRam)
+       if (strServerName === '') {
+          ns.tprint("No more servers available!");
+          break;
+       }
+
+       ns.tprint('Purchased server with ' + minimumRam + ' RAM (costs: ' + serverCosts + ')')
+       ns.tprint('Copying all files to server "' + strServerName + '"')
+       await ns.scp(sourceFiles, strServerName);
+       ++count
+
+       serverCosts = await ns.getPurchasedServerCost(minimumRam)
+       player = await ns.getPlayer()
     }
-}
+ }
