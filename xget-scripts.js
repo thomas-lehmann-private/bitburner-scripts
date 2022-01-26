@@ -33,7 +33,9 @@ export async function main(ns) {
         'xthreads.js',
         'xhack.all.js',
         'xgain-root-access.js',
-        'xupgrade-hacknet.js'
+        'xupgrade-hacknet.js',
+        'xweaken.all.js',
+        'xserver.js'
     ];
 
     for (var iScript=0; iScript < scripts.length; ++iScript) {
