@@ -21,34 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { xwalk } from "xwalk.js";
-import { xnuke } from "xnuke.js";
+import { getHosts } from "xhosts.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {
-    while (true) {
-        var registeredHosts = [];
-        await xwalk(ns, 'home', registeredHosts, async (strHostName) => {
-            if (strHostName !== 'home' && !strHostName.startsWith('slave-')) {
-                ns.print("Processing host " + strHostName);
-                var hasRootAccess = await xnuke(ns, strHostName);
-                if (hasRootAccess) {
-                    var givenHackingLevel = await ns.getHackingLevel();
-                    var requiredHackingLevel = await ns.getServerRequiredHackingLevel(strHostName);
-                    var availableMoney = await ns.getServerMoneyAvailable(strHostName);
+    const iHackingTimeLimit = parseInt(ns.args[0])
+    const hosts = (await getHosts(ns)).filter(host => host.fSrvMoneyAvail > 0)
 
-                    if (givenHackingLevel >= requiredHackingLevel && availableMoney > 10000.0) {
-                        var dAmountMoney = 0.0;
-                        while (dAmountMoney === 0.0) {
-                            dAmountMoney = await ns.hack(strHostName);
-                        }
-                    } else if (availableMoney < 5000) {
-                        await ns.grow(strHostName);
-                    }
-                }
+    while (true) {
+        for (let iHost = 0; iHost < hosts.length; ++iHost) {
+            const strHostName = hosts[iHost].strHostName
+            ns.print("Processing host " + strHostName)
+            let iTime = Math.round((await ns.getHackTime(strHostName))/1000)
+            const fSrvMoneyAvail = Math.trunc(await ns.getServerMoneyAvailable(strHostName))
+
+            if (iTime <= iHackingTimeLimit && fSrvMoneyAvail > 10000.0) {
+                await ns.hack(strHostName);
+            } else if (fSrvMoneyAvail < 5000) {
+                await ns.grow(strHostName);
+            } else {
+                await ns.sleep(100)
             }
-            // continue the walking
-            return true;
-        });
+        }
     }
 }
