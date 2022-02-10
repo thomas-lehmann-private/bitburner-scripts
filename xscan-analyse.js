@@ -21,30 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import { xwalk } from 'xwalk.js'
+import { printTable } from 'xtable.js'
+import { getHosts} from 'xhosts.js'
 
 /** @param {NS} ns **/
 export async function main(ns) {
-    const strBaseUrl = 'https://raw.githubusercontent.com/thomas-lehmann-private/bitburner-scripts/main/'
-    const scripts = [
-        'xwalk.js',
-        'xnuke.js',
-        'xhacknet.js',
-        'xscp.js',
-        'xthreads.js',
-        'xhack.all.js',
-        'xgain-root-access.js',
-        'xupgrade-hacknet.js',
-        'xweaken.all.js',
-        'xserver.js',
-        'xhosts.js',
-        'xtable.js',
-        'xscan-analyse.js'
-    ];
-
-    for (var iScript=0; iScript < scripts.length; ++iScript) {
-        ns.tprint("wget of " + scripts[iScript]);
-        if (!await ns.wget(strBaseUrl + scripts[iScript], scripts[iScript], 'home')) {
-            ns.tprint(" ... failed to get " + strBaseUrl + scripts[iScript]);
-        }	
-    }
+    var hosts = await getHosts(ns)
+    printTable(ns, hosts)
 }

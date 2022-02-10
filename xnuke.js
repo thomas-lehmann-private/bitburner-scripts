@@ -54,6 +54,15 @@ async function getTools(ns) {
 }
 
 /**
+ * Get number of available tools.
+ */
+ export async function givenTools(ns) {
+    const tools = await getTools(ns)
+    return [tools.brutessh.given, tools.ftpcrack.given, tools.relaysmtp,
+            tools.httpworm.given, tools.sqlinject.given].filter(entry => entry === true).length
+}
+
+/**
  * Run nuke with opening of required ports (when possible).
  * It's not running when root access is already given.
  *
